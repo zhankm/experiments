@@ -1,0 +1,229 @@
+y-cruncher Command-Line Manual
+
+--------------------------------------------------------------------------------
+
+General Usage:
+
+    y-cruncher [option] [extra parameters]
+
+
+
+Examples:
+
+
+Run a Pi benchmark 500 million digits:
+
+    y-cruncher bench 500m
+
+
+Compute log(2) to 100 billion digits using 60GB ram and 4 drives in raid 0:
+
+    y-cruncher custom log:2 -dec:100000000000 -mode:swap -M:60g -swap:raid0 g:/ h:/ i:/ j:/
+
+
+
+--------------------------------------------------------------------------------
+
+Common Parameters:
+
+These parameters are used by multiple components in y-cruncher.
+
+
+Parallel Framework:
+
+    -PF:{framework}
+    (Examples: "-PF:none", "-PF:cppasync")
+
+    Use the specified parallel computing framework. The valid values are:
+        -PF:none        Disable multi-threading and sequentialize all tasks.
+        -PF:spawn       Spawn a thread for every task.
+        -PF:cppasync    Use C++11 Async.
+        -PF:winpool     Use the Windows Thread Pool. (only available on Windows)
+        -PF:cilk        Use Cilk Plus work-stealing. (only available on Windows for AVX and AVX2)
+
+
+Task Decomposition:
+
+    -TD:{tasks}
+    (Examples: "-TD:8", "-TD:12")
+
+    Run the operation using the desired level of task decomposition.
+    A larger number enables more parallelism, but at the cost of more
+    computational and memory overhead. For most systems, setting this equal to
+    the number of logical cores is ideal. But forcing it higher may reduce
+    load-imbalance.
+
+    Note that setting this value to 1 does not disable multi-threading since
+    some subroutines ignore the parameter and will decompose anyway. To get a
+    correct single-threaded benchmark, you need to also set the parallel
+    framework to "none".
+
+    Disable Multi-threading: -PF:none -TD:1
+
+
+Memory:
+
+    -M:{memory bytes}
+    (Examples: "-M:100000000", "-M:4.7g")
+
+    Run the operation using the specified amount of memory.
+    Decimals and suffixes are accepted: 4.7g, 9.1t
+    Suffixes are not case sensitive.
+
+
+Min I/O Bytes:
+
+    -minIO:{Min I/O Size}
+    (Examples: "-minIO:1048576", "-minIO:4m")
+
+    Run the operation using the specified amount Min I/O parameter.
+    Decimals and suffixes are accepted: 512k, 1.5m
+    Suffixes are not case sensitive.
+
+
+Swap Mode Configuration:
+
+    -swap:default
+    -swap:raid0 [path0] [path1] [path2] [etc...]
+    -swap:raid3 [path0] [path1] [path2] [etc...]
+
+    -swap:default
+    -swap:raid0 c:/ d:/ e:/ f:/
+    -swap:raid3 c:/ d:/ e:/ f:/ "path with space"
+
+    If this option is used, it must be the last option. All arguments after it
+    will be parsed as paths.
+
+
+--------------------------------------------------------------------------------
+
+Features:
+
+
+--------------------
+Benchmark Pi:
+
+    {program} bench {size} [-PF:{framework}] [-TD:{tasks}]
+
+    y-cruncher bench 25m
+    y-cruncher bench 1b -TD:8
+    y-cruncher bench 1b -PF:none -TD:1
+
+The valid values for {size} are:
+    25m, 50m, 100m, 250m, 500m,
+    1b, 2.5b, 5b, 10b, 25b, 50b, 100b, 250b, 500b,
+    1t, 2.5t
+
+
+
+--------------------
+Component Stress Tester:
+
+    {program} stress [-M:{memory bytes}] [-T:{threads}] [-D:{duration}] [algorithm]
+
+    y-cruncher stress
+    y-cruncher stress -M:3.5G -T:8 -D:300 FFT VST
+
+Runs a stress test using the specified parameters. Unspecified parameters are
+left at their defaults. By default, all algorithms are enabled. Specifying any
+algorithm disables the rest. Multiple algorithms can be specified.
+
+The valid values for [algorithm] are: BKT, FFT, HNT, VST, NTT
+
+
+
+--------------------
+I/O Benchmark:
+
+    {program} benchio [-S:{disk bytes}] [-M:{memory bytes}]
+                      [-PF:{framework}] [-TD:{tasks}]
+                      [-minIO:{Min I/O Size}] [-swap:{mode} [configuration]]
+
+    y-cruncher benchio -S:16.5G
+    y-cruncher benchio -S:16.5g -M:4g -T:8 -minIO:512k
+
+Runs the I/O benchmark using the specified parameters. Unspecified parameters are
+left at their defaults. When "-swap" is not specified, it will use a single path
+at the current working directory.
+
+
+
+--------------------------------------------------------------------------------
+Custom Compute:
+
+    {program} custom {constant[:param]}
+                     [-algorithm:{#}]
+                     [-dec:{decimal digits}]
+                     [-hex:{hexadecimal digits}]
+                     [-PF:{framework}]
+                     [-TD:{tasks}]
+                     [-o {output path}]
+                     [-C:{compress}]
+                     [-mode:{mode}]
+                     [-M:{memory bytes}]
+                     [-minIO:{Min I/O Size}]
+                     [-swap:{mode} [configuration]]
+
+    y-cruncher custom catalan -dec:1000000
+    y-cruncher custom log:2 -algorithm:1 -dec:100000000000 -hex:0 -TD:64 -o "c:/" -C:1000000000 -mode:swap -M:120g -minIO:512k -swap:raid0 g:/ h:/ i:/ j:/
+
+Performs a custom computation using the specified parameters. The optional
+parameters are handled in the order they are specified as if they were entered
+into the UI itself with the same overriding logic. Therefore it is recommended
+to specify the optional parameters in the order they are listed above.
+
+
+    Parameter: {constant:[param]}
+    Examples:  pi, log:2, sqrt:3
+
+    Valid Values: sqrt, phi, goldenratio, e, pi, arccoth, log, apery, zeta(3),
+                  lemniscate, catalan, gamma
+
+--------------------
+
+    Parameter: [-algorithm:{#}]
+    Examples:  -algorithm:0, -algorithm:1
+
+    "#" specifies the algorithm number to use. The number corresponds to the
+    same numbers shown from within the UI. 0 is the default algorithm. The
+    number of algorithms varies with each constant.
+
+--------------------
+
+    Parameter: [-dec:{decimal digits}] [-hex:{hexadecimal digits}]
+    Examples:  -dec:1000000 -hex:0
+
+    Sets the number of digits to compute. "-dec" and "-hex" inherently override
+    each other. The only time it is meaningful to use both is "-dec:X -hex:0"
+    which will compute X decimal digits and disables the hexadecimal digits.
+
+--------------------
+
+    Parameter: [-o {output path}]
+    Examples:  -o c:/digits, -o "c:/path with space"
+
+    Output the digits to the specified path.
+
+--------------------
+
+    Parameter: [-C:{compress}]
+    Examples:  -C:0, -C:-1, -C:1000000000
+
+    Compress the digits using the specified number of digits per file.
+    If the # is zero, compression is disabled and the output will be text files.
+    If the # is -1, the output will be compressed into a single file.
+
+--------------------
+
+    Parameter: [-mode:{mode}]
+    Examples:  -mode:ram, -mode:swap
+
+    Pretty self-explanatory. Those are the only two valid options.
+
+--------------------
+
+    The options, "-M", "-minIO", and "-swap" are only valid in swap mode.
+
+
+
+

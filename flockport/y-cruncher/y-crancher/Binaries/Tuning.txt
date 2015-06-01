@@ -1,0 +1,187 @@
+The binaries in this package have been tuned for different systems.
+
+This file details what systems each has been tuned on.
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 AVX2 ~ Airi
+
+This version was tuned on:
+
+    Processor(s)    :   Intel Core i7 4770K
+    Frequency       :   4.00 GHz
+    Memory          :   32 GB (4 x 8GB) DDR3 @ 1866 MHz (10-11-10-27)
+
+    Cores           :   4
+    Threads         :   8
+    Cache           :   8 MB
+    Cache / Threads :   1 MB / thread
+
+
+    Target Systems:
+        - Intel Haswell
+
+    Recommended For:
+        - All Intel Haswell processors
+        - All future Intel processors
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 XOP ~ Miyu
+
+This version was tuned on:
+
+    Processor(s)    :   AMD FX-8350
+    Frequency       :   4.00 GHz
+    Memory          :   32 GB (4 x 8GB) DDR3 @ 1866 MHz (10-11-10-30)
+
+    Cores           :   8 (4 modules)
+    Threads         :   8
+    Cache           :   8 MB
+    Cache / Threads :   1 MB / thread
+
+
+    Target Systems:
+        - AMD Piledriver
+
+    Recommended For:
+        - All AMD Bulldozer/Piledriver processors
+        - All future AMD processors
+
+
+*This build uses 128-bit AVX, FMA4, and XOP instructions. It will not run on any
+Intel processors as of 2013.
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 AVX ~ Hina
+
+This version was tuned on:
+
+    Processor(s)    :   Intel Core i7 2600K
+    Frequency       :   4.20 GHz
+    Memory          :   16 GB (4 x 4GB) DDR3 @ 1334 MHz (9-9-9-24)
+
+    Cores           :   4
+    Threads         :   8
+    Cache           :   8 MB
+    Cache / Threads :   1 MB / thread
+
+
+    Target Systems:
+        - Intel Sandy Bridge
+
+    Recommended For:
+        - All Intel Sandy/Ivy Bridge processors
+
+
+*This build will run on any processor supporing AVX instructions. But it is not
+recommended for the AMD Bulldozer family due to sub-optimal 256-bit AVX performance.
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 SSE4.1 ~ Ushio
+
+This version was tuned on:
+
+    Processor(s)    :   Intel Core i7 920
+    Frequency       :   3.34 GHz (3.50 GHz Turbo Boost)
+    QPI             :   6.00 GT/s
+    Uncore          :   2.84 GHz
+    Memory          :   12 GB (6 x 2GB) DDR3 @ 1335 MHz (9-9-9-25)
+
+    Cores           :   4
+    Threads         :   8
+    Cache           :   8 MB
+    Cache / Threads :   1 MB / thread
+
+
+    Target Systems:
+        - Intel Nehalem
+
+    Recommended For:
+        - All Intel Nehalem/Westmere processors
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 SSE4.1 ~ Nagisa
+
+This version was tuned on:
+
+    Processor(s)    :   2 x Intel Xeon X5482 Harpertown
+    Frequency       :   3.2 GHz
+    FSB             :   1600 MHz
+    Memory          :   64 GB (16 x 4GB) DDR2 @ 800 MHz (5-5-5-18)
+
+    Cores           :   8
+    Threads         :   8
+    Cache           :   24 MB
+    Cache / Threads :   3 MB / thread
+
+
+    Target Systems:
+        - Intel Yorkfield (3 MB cache/thread)
+
+    Recommended For:
+        - All Intel Core 2 processors with SSE4.1
+
+
+*This build is no longer supported as of version 0.6.1.
+
+
+--------------------------------------------------------------------------------
+
+Version: x64 SSE3 ~ Kasumi
+
+This version was tuned on:
+
+    Processor(s)    :   AMD Phenom II X3
+    Frequency       :   2.80 GHz
+    HyperTransport  :   2.00 GHz
+    Memory          :   4 GB (2 x 2GB) DDR3 @ 1333 MHz (9-9-9-25)
+
+    Cores           :   4   (unlocked from 3 cores)
+    Threads         :   4
+    Cache           :   6 MB
+    Cache / Threads :   1.5 MB / thread
+
+
+    Target Systems:
+        - AMD K10
+
+    Recommended For:
+        - All x86-64 processors supporting SSE3 that are not already listed.
+
+
+--------------------------------------------------------------------------------
+
+Version: x86 SSE3
+
+    No Processor Specific Tuning
+
+
+    Recommended For:
+        - All x86 processors supporting SSE3 that are not already listed.
+
+
+--------------------------------------------------------------------------------
+
+Version: x86
+
+    No Processor Specific Tuning
+
+
+    Recommended For:
+        - Legacy x86.
+
+
+*This build is no longer supported as of version 0.6.1.
+
+
+--------------------------------------------------------------------------------
+
